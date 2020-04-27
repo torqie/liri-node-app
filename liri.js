@@ -28,11 +28,22 @@ const liri = {
       console.log("search Term: ", artist);
       const url = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
       const result = await this.search(url);
-      console.log("result: ", result);
+      for(let i = 0; i < result.length; i++) {
+        this.printSeperator();
+        console.log("Venue: " + result.venue.name);
+        console.log("Location: " + result.venue.location);
+        console.log("Event Date: " + result.datetime);
+        this.printSeperator();
+      }
+
+
     });
   },
 
-  async music(str1) {
+  music() {
+
+
+
     const url = "https://rest.bandsintown.com/artists/" + str1 + "/events?app_id=codingbootcamp";
     const result = await this.search(url);
     console.log(result)
@@ -49,6 +60,10 @@ const liri = {
     const result = await this.search(url);
     console.log(result)
   },
+
+  printSeperator() {
+    console.log("**********-**********-**********-**********");
+  }
 }
 
 
