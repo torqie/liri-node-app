@@ -44,7 +44,8 @@ const liri = {
     inquirer.prompt({
       type: "input",
       message: "What song do you want information about?",
-      name: "song"
+      name: "song",
+      default: "The Sign"
     }).then(async answer => {
       var info = await spotify.search({type: "track", query: answer.song, limit: 1 });
       var items = info.tracks.items;
