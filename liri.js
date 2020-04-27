@@ -10,10 +10,11 @@ const momment = require("moment");
 const fs = require("fs");
 
 const liri = {
-  
+
   async search(url) {
+    liri.log("Getting data from " + url);
     const response = await axios.get(url);
-    //console.log("response: ", response);
+    liri.log("Response Received");
     return response;
   },
 
@@ -21,9 +22,8 @@ const liri = {
     if(band !== null) {
       var artist = band.replace(" ", "+").replace(/"/g, '');
       const url = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
-      console.log("URL: ", url);
-      
       const result = await this.search(url);
+
       this.displayConcerts(result);
     } else {
       inquirer.prompt({
@@ -50,11 +50,13 @@ const liri = {
       console.log("Event Date: " + date);
       this.printSeperator();
     }
+    liri.log("Displaying Concerts Successful");
   },
 
   async music(song = null) {
     if(song !== null) {
       var info = await spotify.search({type: "track", query: song, limit: 5 });
+      liri.log("Response Received");
       this.displayMusic(info.tracks.items);
     } else {
       inquirer.prompt({
@@ -64,6 +66,7 @@ const liri = {
         default: "The Sign"
       }).then(async answer => {
         var info = await spotify.search({type: "track", query: answer.song, limit: 3});
+        liri.log("Response Received");
         this.displayMusic(info.tracks.items);
       });
     }
@@ -91,6 +94,7 @@ const liri = {
       this.printSeperator();
 
     }
+    liri.log("Displayed Music Successfully")
   },
 
   async movies(movie = null) {
@@ -127,6 +131,8 @@ const liri = {
     console.log("actors: " + result.Actors);
     console.log("plot: " + result.Plot);
     this.printSeperator();
+
+    liri.log("Displayed Movies Successfully")
   },
 
   async justDoIt() {
@@ -144,18 +150,22 @@ const liri = {
   start(choice, value) {
     switch (choice) {
       case "concert-this":
+        liri.log("Command: liri.concerts(" + value + ")");
         liri.concerts(value);
         break;
 
       case "spotify-this-song":
+        liri.log("Command: liri.music(" + value + ")");
         liri.music(value);
         break;
 
       case "movie-this":
+        liri.log("Command: liri.movies(" + value + ")");
         liri.movies(value);
         break;
 
       case "do-what-it-says":
+        liri.log("Command: liri.justDoIt()");
         liri.justDoIt();
         break;
     }
@@ -165,6 +175,13 @@ const liri = {
     console.log("");
     console.log("**********-**********-**********-**********");
     console.log("");
+  },
+
+  log(message) {
+    fs.appendFile('log.txt', message + "\r\n", function (err) {
+      if (err) throw err;
+      console.log('Saved!');
+    });
   }
 
 }
@@ -183,9 +200,9 @@ inquirer.prompt([
     name: "searchType"
   }
 ]).then(answer => {
-  //console.log(answer.searchType);
+  liri.log("Command: liri.start(" + answer.searchType + ")")
   liri.start(answer.searchType);
 }).catch(error => {
-  console.error(error);
+  liri.log("Error: " + error);
 });
 
