@@ -22,7 +22,8 @@ const liri = {
     inquirer.prompt({
       type: "input",
       message: "What Band, or Artist would you like to look up?",
-      name: "searchTerm"
+      name: "searchTerm",
+      default: "kid rock"
     }).then(async answer => {
 
       var artist = answer.searchTerm.replace(" ", "+");
