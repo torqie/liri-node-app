@@ -7,81 +7,158 @@ const keys = require("./keys.js");
 const axios = require("axios");
 const spotify = new Spotify(keys.spotify);
 const momment = require("moment");
+const fs = require("fs");
 
 const liri = {
-
-
-
+  
   async search(url) {
     const response = await axios.get(url);
-    //console.log("response: ", response.data);
-    return response.data;
+    //console.log("response: ", response);
+    return response;
   },
 
-  concerts() {
-    inquirer.prompt({
-      type: "input",
-      message: "What Band, or Artist would you like to look up?",
-      name: "searchTerm",
-      default: "kid rock"
-    }).then(async answer => {
-
-      var artist = answer.searchTerm.replace(" ", "+");
+  async concerts(band = null) {
+    if(band !== null) {
+      var artist = band.replace(" ", "+").replace(/"/g, '');
       const url = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+      console.log("URL: ", url);
+      
       const result = await this.search(url);
-
-      for(let i = 0; i < result.length; i++) {
-        const date = momment(result[i].datetime).format("MM/DD/YYYY");
-        this.printSeperator();
-        console.log("Venue: " + result[i].venue.name);
-        console.log("Location: " + result[i].venue.location);
-        console.log("Event Date: " + date);
-        this.printSeperator();
-      }
-    });
+      this.displayConcerts(result);
+    } else {
+      inquirer.prompt({
+        type: "input",
+        message: "What Band, or Artist would you like to look up?",
+        name: "artist",
+        default: "kid rock"
+      }).then(async answer => {
+        var artist = answer.artist.replace(" ", "+");
+        const url = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+        const result = await this.search(url);
+        this.displayConcerts(result);
+      });
+    }
   },
 
-  music() {
-    inquirer.prompt({
-      type: "input",
-      message: "What song do you want information about?",
-      name: "song",
-      default: "The Sign"
-    }).then(async answer => {
-      var info = await spotify.search({type: "track", query: answer.song, limit: 1 });
-      var items = info.tracks.items;
+  displayConcerts(result) {
+    for (let i = 0; i < result.data.length; i++) {
+      const concert = result.data[i];
+      const date = momment(concert.datetime).format("MM/DD/YYYY");
+      this.printSeperator();
+      console.log("Venue: " + concert.venue.name);
+      console.log("Location: " + concert.venue.location);
+      console.log("Event Date: " + date);
+      this.printSeperator();
+    }
+  },
 
-      for(let i = 0; i < items.length; i++) {
-        var item = items[i];
-        var artists = item.artists;
-        
-        var art = "";
-        for(let i = 0; i < artists.length; i++) {
-          if(i === artists.length - 1) {
-            art += artists[i].name;
-          } else {
-            art += artists[i].name + ", ";
-          }
+  async music(song = null) {
+    if(song !== null) {
+      var info = await spotify.search({type: "track", query: song, limit: 5 });
+      this.displayMusic(info.tracks.items);
+    } else {
+      inquirer.prompt({
+        type: "input",
+        message: "What song do you want information about?",
+        name: "song",
+        default: "The Sign"
+      }).then(async answer => {
+        var info = await spotify.search({type: "track", query: answer.song, limit: 3});
+        this.displayMusic(info.tracks.items);
+      });
+    }
+  },
+
+  displayMusic(items) {
+    for (let i = 0; i < items.length; i++) {
+      var item = items[i];
+      var artists = item.artists;
+
+      var art = "";
+      for (let i = 0; i < artists.length; i++) {
+        if (i === artists.length - 1) {
+          art += artists[i].name;
+        } else {
+          art += artists[i].name + ", ";
         }
-
-        this.printSeperator();
-        console.log("Artists: ", art);
-        console.log("Song Name: ", item.name);
-        console.log("Preview Link: ", item.external_urls.spotify);
-        console.log("album: ", item.album.name);
-        this.printSeperator();      
       }
+
+      this.printSeperator();
+      console.log("Artists: ", art);
+      console.log("Song Name: ", item.name);
+      console.log("Preview Link: ", item.external_urls.spotify);
+      console.log("album: ", item.album.name);
+      this.printSeperator();
+
+    }
+  },
+
+  async movies(movie = null) {
+
+    if(movie !== null) {
+      var title = movie.replace(" ", "+").replace(/"/g, '');
+      var url = "http://www.omdbapi.com/?apikey=trilogy&t=" + title;
+      let result = await this.search(url);
+      this.displayMovies(result.data);
+    } else {
+      inquirer.prompt({
+        type: "input",
+        message: "What movie would you like to look up?",
+        name: "movie",
+        default: "Mr. Nobody."
+      }).then(async answer => {
+        var title = answer.movie.replace(" ", "+");
+        var url = "http://www.omdbapi.com/?apikey=trilogy&t=" + title;
+        let result = await this.search(url);
+        this.displayMovies(result.data);
+      });
+    }
+
+  },
+
+  displayMovies(result) {
+    this.printSeperator();
+    console.log("Title: " + result.Title);
+    console.log("Year: " + result.Year);
+    console.log("IMDB Rating: " + result.imdbRating);
+    console.log("Rotten Tomatoes: " + result.Ratings[1].Value);
+    console.log("country: " + result.Country);
+    console.log("language: " + result.Language);
+    console.log("actors: " + result.Actors);
+    console.log("plot: " + result.Plot);
+    this.printSeperator();
+  },
+
+  async justDoIt() {
+    const text = fs.readFile('./random.txt', function (err, data) {
+      if (err) {
+        return console.error(err);
+      }
+      const keyValue = data.toString().split(",");
+      console.log("Key Value: ", keyValue);
+      liri.start(keyValue[0], keyValue[1]);
     });
-  },
-
-  movies() {
 
   },
 
-  async justDoIt(str1) {
-    const url = "https://rest.bandsintown.com/artists/" + str1 + "/events?app_id=codingbootcamp";
-    const result = await this.search(url);
-    console.log(result)
+  start(choice, value) {
+    switch (choice) {
+      case "concert-this":
+        liri.concerts(value);
+        break;
+
+      case "spotify-this-song":
+        liri.music(value);
+        break;
+
+      case "movie-this":
+        liri.movies(value);
+        break;
+
+      case "do-what-it-says":
+        liri.justDoIt();
+        break;
+    }
   },
 
   printSeperator() {
@@ -89,6 +166,7 @@ const liri = {
     console.log("**********-**********-**********-**********");
     console.log("");
   }
+
 }
 
 
@@ -105,16 +183,8 @@ inquirer.prompt([
     name: "searchType"
   }
 ]).then(answer => {
-  console.log(answer.searchType);
-
-  switch (answer.searchType) {
-    case "concert-this":
-      console.log("made it!")
-      liri.concerts();
-      break;
-    case "spotify-this-song":
-      liri.music();
-  }
+  //console.log(answer.searchType);
+  liri.start(answer.searchType);
 }).catch(error => {
   console.error(error);
 });
