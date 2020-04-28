@@ -180,7 +180,6 @@ const liri = {
   log(message) {
     fs.appendFile('log.txt', message + "\r\n", function (err) {
       if (err) throw err;
-      console.log('Saved!');
     });
   }
 
