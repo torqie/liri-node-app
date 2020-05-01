@@ -13,20 +13,36 @@ LIRI is a _Language_ Interpretation and Recognition Interface. LIRI is a command
 
 ## Installation
 
-Navigate to the folder where you want to clone the app then run the following command.
-` git clone git@github.com:torqie/liri-node-app.git`
+* Navigate to the folder where you want to clone the app then run the following command.
 
-This command will create a folder called liri-node-app and the project file will be within that folder. Lets go ahead and change into that directory now
+ git clone git@github.com:torqie/liri-node-app.git`
+
+* This command will create a folder called liri-node-app and the project file will be within that folder. Lets go ahead and change into that directory now
+
 ` cd liri-node-app `
 
-Next we need to install the npm dependencies. Run the following command in the terminal.
+* Next we need to install the npm dependencies. Run the following command in the terminal.
+
 ` npm install `
 
-Great! That is all that is require for installation  for this node app.
+* Next create a .env file within the directory
+
+` touch .env `
+
+* Within the .env place the following text and save the file.
+
+```
+# Spotify API keys
+SPOTIFY_ID=b747d75bcb64468ab323d06e83ff723e
+SPOTIFY_SECRET=60755d2dbbd24a94ab1e6796e824ee47
+```
+
+* Great! That is all that is require for installation  for this node app.
 
 ## How To Use
 
 Now that you have the node app installed lets go ahead and run the app with the following command
+
 ` node liri.js `
 
 From here select one of the following
