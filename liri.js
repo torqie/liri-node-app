@@ -51,6 +51,7 @@ const liri = {
       this.printSeperator();
     }
     liri.log("Displaying Concerts Successful");
+    askQuestion();
   },
 
   async music(song = null) {
@@ -94,7 +95,8 @@ const liri = {
       this.printSeperator();
 
     }
-    liri.log("Displayed Music Successfully")
+    liri.log("Displayed Music Successfully");
+    askQuestion();
   },
 
   async movies(movie = null) {
@@ -132,19 +134,16 @@ const liri = {
     console.log("plot: " + result.Plot);
     this.printSeperator();
 
-    liri.log("Displayed Movies Successfully")
+    liri.log("Displayed Movies Successfully");
+    askQuestion();
   },
 
   async justDoIt() {
     const text = fs.readFile('./random.txt', function (err, data) {
-      if (err) {
-        return console.error(err);
-      }
+      if (err) {return console.error(err)}
       const keyValue = data.toString().split(",");
-      console.log("Key Value: ", keyValue);
       liri.start(keyValue[0], keyValue[1]);
     });
-
   },
 
   start(choice, value) {
@@ -185,23 +184,27 @@ const liri = {
 
 }
 
+var askQuestion = function() {
+  inquirer.prompt([
+    {
+      type: "list",
+      message: "What would you like to do?",
+      choices: [
+        {name: "Show me concert information.", value: "concert-this"},
+        {name: "Look up song information", value: "spotify-this-song"},
+        {name: "Look up information on a movie", value: "movie-this"},
+        {name: "Show me something random", value: "do-what-it-says"},
+        {name: "Nothing, I'm done having fun!", value: "do-nothing"}
+      ],
+      name: "searchType"
+    }
+  ]).then(answer => {
+    liri.log("Command: liri.start(" + answer.searchType + ")");
+    liri.start(answer.searchType);
+  }).catch(error => {
+    liri.log("Error: " + error);
+  });
+};
+askQuestion();
 
-inquirer.prompt([
-  {
-    type: "list",
-    message: "Please Select one...",
-    choices: [
-      "concert-this",
-      "spotify-this-song",
-      "movie-this",
-      "do-what-it-says"
-    ],
-    name: "searchType"
-  }
-]).then(answer => {
-  liri.log("Command: liri.start(" + answer.searchType + ")")
-  liri.start(answer.searchType);
-}).catch(error => {
-  liri.log("Error: " + error);
-});
 
