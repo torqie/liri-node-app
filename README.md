@@ -30,12 +30,21 @@ Now that you have the node app installed lets go ahead and run the app with the 
 ` node liri.js `
 
 From here select one of the following
-* concert-this *(Finds concerts by band or artist)*
-* spotify-this-song *(Finds information about a song)*
-* movie-this *(Finds information about a movie)*
-* do-what-it-says *(Reads a text file and does what it says)*
+* Show me contcert information *(Finds concerts by band or artist)*
+* Look up song information *(Finds information about a song)*
+* Look up information on a movie *(Finds information about a movie)*
+* Show me something random *(Reads a text file and does what it says)*
+* Nothing, I'm done having fun *(Exits The Program)*
 
-If you select any of the options besides the do-what-it-says option on the next propmp you will be asked for the item you are searching for. Please note that if you dont have an idea of what to search for, we have provided some great defaults.
+If you select any of the options besides the "Nothing, I'm done having fun" option on the next propmp you will be 
+asked for the item you are searching for. Please note that if you dont have an idea of what to search for, we have 
+provided some great defaults.
+
+## Technologies Used
+* Javascript
+* Axios
+* Moment
+* Node
 
 ## Conculsion
 
