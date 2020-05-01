@@ -25,7 +25,9 @@ const liri = {
       const result = await this.search(url);
 
       this.displayConcerts(result);
+      liri.log("Command: liri.concerts('" + artist + "')");
     } else {
+      liri.log("Command: liri.concerts()");
       inquirer.prompt({
         type: "input",
         message: "What Band, or Artist would you like to look up?",
@@ -149,17 +151,16 @@ const liri = {
   start(choice, value) {
     switch (choice) {
       case "concert-this":
-        liri.log("Command: liri.concerts(" + value + ")");
         liri.concerts(value);
         break;
 
       case "spotify-this-song":
-        liri.log("Command: liri.music(" + value + ")");
+        liri.log("Command: liri.music('" + value + "')");
         liri.music(value);
         break;
 
       case "movie-this":
-        liri.log("Command: liri.movies(" + value + ")");
+        liri.log("Command: liri.movies('" + value + "')");
         liri.movies(value);
         break;
 

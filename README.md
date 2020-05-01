@@ -6,8 +6,10 @@ LIRI is a _Language_ Interpretation and Recognition Interface. LIRI is a command
 * Search for information on a movie
 
 ## Demo
-[Demo Video](https://drive.google.com/file/d/1lrKud3sOPaVq6rbmHd2E5bpg-XU5eVHc/view)
+![enter image description here](assets/images/demo.gif)
 
+#### Log file
+![enter image description here](assets/images/logfile.png)
 
 ## Installation
 
